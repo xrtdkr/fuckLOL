@@ -23,6 +23,7 @@ while 1:
     print 'arp send'
     sniff(filter="arp", count=1)
 
+
 '''
 [ XShortField("hwtype", 0x0001),
                     XShortEnumField("ptype",  0x0800, ETHER_TYPES),
