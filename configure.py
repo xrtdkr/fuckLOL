@@ -1,0 +1,7 @@
+
+
+# coding = utf-8
+
+BROADCAST_ADDRESS = '192.168.1.255'
+GATEWAY_ADDRESS = '192.168.1.1'
+
