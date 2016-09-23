@@ -5,11 +5,12 @@ from scapy.all import ARP
 from scapy.all import *
 import socket
 import struct
+from tools import *
 
 arpFake = ARP()
 
-psrc = '192.168.1.1'
-pdst = '192.168.1.255'
+psrc = get_gate_way()
+pdst =
 
 hwsrc = 'a0:99:9b:0f:aa:45'
 
