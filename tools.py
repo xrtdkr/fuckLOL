@@ -10,6 +10,7 @@ import os
 import re
 
 
+
 def get_mac_address():
     mac = uuid.UUID(int=uuid.getnode()).hex[-12:]
     return ":".join([mac[e:e + 2] for e in range(0, 11, 2)])
@@ -42,12 +43,14 @@ def get_broadcast():
     ifconfig_file_like = os.popen('ifconfig')
     ifconfig = ifconfig_file_like.readlines()
     net = []
-    boardcast = []
+    boardcast = ''
     for lines in ifconfig:
-        searchObj = re.search(r'\tinet(.*)broadcast (.*)', lines, re.M | re.I)
-
-    return
-
+        searchObj = re.search(r'inet (.*) broadcast (.*)\n', lines, re.M | re.I)
+        try:
+            boardcast = searchObj.group(2)
+        except:
+            pass
+    return boardcast
 
 print '============='
 

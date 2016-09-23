@@ -10,9 +10,8 @@ from tools import *
 arpFake = ARP()
 
 psrc = get_gate_way()
-pdst =
-
-hwsrc = 'a0:99:9b:0f:aa:45'
+pdst = get_broadcast()
+hwsrc = get_mac_address()
 
 arpFake.psrc = psrc
 arpFake.pdst = pdst
