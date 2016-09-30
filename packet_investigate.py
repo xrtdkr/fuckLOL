@@ -8,6 +8,8 @@ from struct import *
 import datetime
 import pcapy
 import sys
+from scapy.all import send
+from packet import Packet_ez
 
 
 def main(argv):
@@ -75,13 +77,20 @@ def parse_packet(packet):
 
         ttl = iph[5]
         protocol = iph[6]
-        s_addr = socket.inet_ntoa(iph[8]);
-        d_addr = socket.inet_ntoa(iph[9]);
+        s_addr = socket.inet_ntoa(iph[8])
+        d_addr = socket.inet_ntoa(iph[9])
+
+        ret_packet = Packet_ez(d_addr, s_addr, packet, 'IP')
 
         print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(
             ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(
             s_addr) + ' Destination Address : ' + str(d_addr)
 
+        return ret_packet
+    else:
+        return 'ARPARP'
+
+'''
         # TCP protocol
         if protocol == 6:
             t = iph_length + eth_length
@@ -107,6 +116,7 @@ def parse_packet(packet):
             data = packet[h_size:]
 
             print 'Data : ' + data
+            return None
 
         # ICMP Packets
         elif protocol == 1:
@@ -159,8 +169,7 @@ def parse_packet(packet):
         # some other IP packet like IGMP
         else:
             print 'Protocol other than TCP/UDP/ICMP'
-
-        print 'ACKACK'
+        '''
 
 
 if __name__ == "__main__":
