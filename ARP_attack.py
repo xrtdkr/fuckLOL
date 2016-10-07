@@ -36,3 +36,6 @@ def arp_attack():
                     MACField("hwdst", ETHER_ANY),
                     IPField("pdst", "0.0.0.0") ]
 '''
+if __name__ == '__main__':
+    arp_attack()
+

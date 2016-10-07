@@ -13,13 +13,29 @@
 '''
 
 import socket
-import multiprocessing
+import multi_process_test
 from ARP_attack import *
 from packet_investigate import *
 import argparse
-
+import os
+from multiprocessing import Process
 
 arp_attack()
 
+if __name__ == '__main__':
+    p_2 = Process(target=main_start, args=None)
+    p_2.start()
+    p_2.join()
+    print '[ permanent can ber print ]'
 
-main_start()
+'''
+p_1 = Process(target=arp_attack())
+p_1.start()
+
+p_2 = Process(target=main_start())
+p_2.start()
+
+'''
+
+
+

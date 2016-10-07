@@ -23,7 +23,9 @@ class Packet_ez(object):
     def packet_judge(self):
         if self.destination_ip in lol_ip_config:
             pass
-        elif self.source_mac == get_mac_address():
+        elif self.source_mac == get_mac_address() or self.destination_mac == get_mac_address():
+            pass
+        elif self.destination_ip == get_broadcast():
             pass
         else:
             print 'packet judged'

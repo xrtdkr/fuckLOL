@@ -87,7 +87,10 @@ def parse_packet(packet):
         return 'ARPARP'
 
 
-main_start()
+if __name__ == '__main__':
+    main_start()
+
+
 
 
 '''
