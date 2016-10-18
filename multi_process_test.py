@@ -1,5 +1,5 @@
 # coding= utf-8
-
+'''演进过程：'''
 
 import os
 from multiprocessing import Process
@@ -7,12 +7,9 @@ from multiprocessing import Process
 from scapy.all import *
 from scapy.all import send
 import binascii
+from packet import Packet_ez
 
-'''
-def child_process(name):
-    print "i am a child process and pid is: " + str(os.getpid())
-'''
-
+# 配置混杂
 conf.sniff_promisc = True
 
 
@@ -20,18 +17,43 @@ def sniff_en():
     def prn(packet):
         raw = packet.__str__()
         etherheader = struct.unpack('!6s6s', raw[0:12])
-        dst = binascii.hexlify(etherheader[0])
-        src = binascii.hexlify(etherheader[1])
+
+        src_mac = packet[0][0].src
+        dst_mac = packet[0][0].dst
+        print src_mac
+        print dst_mac
+
+        src = packet[0][1].src
+        dst = packet[0][1].dst
+
         print '============look here============='
+        '''
         print binascii.hexlify(raw)
         print dst
         print src
+        '''
+        print src + ' ====> ' + dst
         print '=================================='
+        # init the packet
+        packet_ez = Packet_ez( destination_ip=dst,
+                               source_ip=src,
+                               packet_itself=packet,
+                               protocol='ip',
+                               destination_mac=dst_mac,
+                               source_mac=src_mac,
+                               )
+        packet_ez.packet_judge()
 
-    sniff(iface='en0', filter='ip', prn=prn)
+    sniff(filter='ip', prn=prn)
+
+if __name__ == '__main__':
+    sniff_en()
 
 
 '''
+def child_process(name):
+    print "i am a child process and pid is: " + str(os.getpid())
+
 if __name__ == '__main__':
     print 'Parents process: '+str(os.getpid()) + ' now start'
     child_p = Process(target=child_process, args=('hahaha', ))
