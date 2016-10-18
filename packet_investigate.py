@@ -8,11 +8,14 @@ from struct import *
 import datetime
 import pcapy
 import sys
+from scapy.all import *
 from scapy.all import send
 from packet import Packet_ez
 
 
 def main_start(device=None):
+
+    conf.sniff_promisc = True
     # list all devices
     default_device = 'en0'
     if device == None:
@@ -20,6 +23,7 @@ def main_start(device=None):
     else:
         pass
     print 'now start: ' + device
+
     '''
     open device
     # Arguments here are:
@@ -47,7 +51,6 @@ def eth_addr(a):
 def parse_packet(packet):
     # parse ethernet header
     eth_length = 14
-
     eth_header = packet[:eth_length]
     eth = unpack('!6s6sH', eth_header)
     eth_protocol = socket.ntohs(eth[2])

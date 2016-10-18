@@ -25,6 +25,9 @@ def arp_attack():
         print 'arp send'
 
 
+
+conf.sniff_promisc = True
+
 '''
 [ XShortField("hwtype", 0x0001),
                     XShortEnumField("ptype",  0x0800, ETHER_TYPES),
