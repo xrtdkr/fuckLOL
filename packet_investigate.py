@@ -12,8 +12,14 @@ from scapy.all import *
 from scapy.all import send
 from packet import Packet_ez
 
+conf.promisc = 1
+conf.sniff_promisc = 1
+
 
 def main_start():
+    conf.promisc = True
+    conf.sniff_promisc = True
+
     def prn(packets):
         raw = packets.__str__()
 

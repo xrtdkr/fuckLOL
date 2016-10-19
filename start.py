@@ -14,20 +14,17 @@
 
 import socket
 import multi_process_test
-from ARP_attack import *
-from packet_investigate import *
+from ARP_attack import arp_attack
+from packet_investigate import main_start
 import argparse
 import os
 from multiprocessing import Process
-
-arp_attack()
+from utils import start_threading
 
 if __name__ == '__main__':
-    p_2 = Process(target=main_start, args=None)
-    p_2.start()
-    p_2.join()
-    print '[ permanent can ber print ]'
+    start_threading(arp_attack, ())
 
+    start_threading(main_start, ())
 '''
 p_1 = Process(target=arp_attack())
 p_1.start()

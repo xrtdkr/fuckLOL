@@ -69,6 +69,8 @@ import os
 
 # 子进程要执行的代码
 def run_proc(name):
+    while(1):
+        print 1
     print 'Run child process %s (%s)...' % (name, os.getpid())
 
 
