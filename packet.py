@@ -22,13 +22,16 @@ class Packet_ez(object):
 
     def packet_judge(self):
         if self.destination_ip in lol_ip_config:
+            print 'lol packet! has been abandon...'
             pass
         elif self.source_mac == get_mac_address() or self.destination_mac == get_mac_address():
+            print 'loop packet, machine-self packet, abandon'
             pass
         elif self.destination_ip == get_broadcast():
+            print 'broadcast packet, abandon'
             pass
         else:
-            print 'packet judged'
+            print 'packet is clean...has judged'
             self.__send_packet()
-            print '=========== divid line ==============='
+            print 'packet has send'
         return "judge_success"

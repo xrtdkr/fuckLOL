@@ -13,88 +13,39 @@ from scapy.all import send
 from packet import Packet_ez
 
 
-def main_start(device=None):
+def main_start():
+    def prn(packets):
+        raw = packets.__str__()
 
-    conf.sniff_promisc = True
-    # list all devices
-    default_device = 'en0'
-    if device == None:
-        device = default_device
-    else:
-        pass
-    print 'now start: ' + device
+        src_mac = packets[0][0].src
+        dst_mac = packets[0][0].dst
 
-    '''
-    open device
-    # Arguments here are:
-    #   device
-    #   snaplen (maximum number of bytes to capture _per_packet_)
-    #   promiscious mode (1 for true)
-    #   timeout (in milliseconds)
-    '''
-    cap = pcapy.open_live(device, 65536, 1, 0)
+        src_ip = packets[0][1].src
+        dst_ip = packets[0][1].dst
 
-    # start sniffing packets
-    while (1):
-        (header, packet) = cap.next()
-        # print ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen()))
-        parse_packet(packet)
+        packets_ez = Packet_ez(
+            destination_ip=dst_ip,
+            source_ip=src_ip,
+            destination_mac=dst_mac,
+            source_mac=src_mac,
+            packet_itself=packets,
+            protocol='ip',
+        )
+        #  log here!
+        print '==============Log here=============='
 
+        print 'attack start!!'
+        print 'This packet mac route is: ' + packets_ez.source_mac + '====>' + packets_ez.destination_mac
+        print 'This packet ip route is: ' + packets_ez.source_ip + '====>' + packets_ez.destination_ip
+        packets_ez.packet_judge()
 
-# Convert a string of 6 characters of ethernet address into a dash separated hex string
-def eth_addr(a):
-    b = "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x" % (ord(a[0]), ord(a[1]), ord(a[2]), ord(a[3]), ord(a[4]), ord(a[5]))
-    return b
+        print '==============over=================='
 
-
-# function to parse a packet
-def parse_packet(packet):
-    # parse ethernet header
-    eth_length = 14
-    eth_header = packet[:eth_length]
-    eth = unpack('!6s6sH', eth_header)
-    eth_protocol = socket.ntohs(eth[2])
-    d_mac = eth_addr(packet[0:6])
-    s_mac = eth_addr(packet[6:12])
-    print 'Destination MAC : ' + eth_addr(packet[0:6]) + ' Source MAC : ' + eth_addr(
-        packet[6:12]) + ' Protocol : ' + str(eth_protocol)
-
-    # Parse IP packets, IP Protocol number = 8
-    if eth_protocol == 8:
-        # Parse IP header
-        # take first 20 characters for the ip header
-        ip_header = packet[eth_length:20 + eth_length]
-
-        # now unpack them :)
-        iph = unpack('!BBHHHBBH4s4s', ip_header)
-
-        version_ihl = iph[0]
-        version = version_ihl >> 4
-        ihl = version_ihl & 0xF
-
-        iph_length = ihl * 4
-
-        ttl = iph[5]
-        protocol = iph[6]
-        s_addr = socket.inet_ntoa(iph[8])
-        d_addr = socket.inet_ntoa(iph[9])
-
-        ret_packet = Packet_ez(d_addr, s_addr, d_mac, s_mac, packet, 'IP')
-        ret_packet.packet_judge()
-        print 'Version : ' + str(version) + ' IP Header Length : ' + str(ihl) + ' TTL : ' + str(
-            ttl) + ' Protocol : ' + str(protocol) + ' Source Address : ' + str(
-            s_addr) + ' Destination Address : ' + str(d_addr)
-
-        return ret_packet
-    else:
-        return 'ARPARP'
+    sniff(filter='ip', prn=prn)
 
 
 if __name__ == '__main__':
     main_start()
-
-
-
 
 '''
         # TCP protocol

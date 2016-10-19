@@ -1,5 +1,6 @@
 # coding= utf-8
-'''演进过程：'''
+'''演进过程：
+    1. 先实现即使开了arp也可以完成整个数据包的收发：'''
 
 import os
 from multiprocessing import Process
@@ -9,11 +10,10 @@ from scapy.all import send
 import binascii
 from packet import Packet_ez
 
-# 配置混杂
-conf.sniff_promisc = True
-
-
+'''
 def sniff_en():
+    conf.sniff_promisc = True
+
     def prn(packet):
         raw = packet.__str__()
         etherheader = struct.unpack('!6s6s', raw[0:12])
@@ -26,31 +26,31 @@ def sniff_en():
         src = packet[0][1].src
         dst = packet[0][1].dst
 
-        print '============look here============='
-        '''
+        packet_ez = Packet_ez(destination_ip=dst,
+                              source_ip=src,
+                              packet_itself=packet,
+                              protocol='ip',
+                              destination_mac=dst_mac,
+                              source_mac=src_mac,
+                              )
+
+        print '============look here==========================='
+
         print binascii.hexlify(raw)
         print dst
         print src
-        '''
-        print src + ' ====> ' + dst
-        print '=================================='
-        # init the packet
-        packet_ez = Packet_ez( destination_ip=dst,
-                               source_ip=src,
-                               packet_itself=packet,
-                               protocol='ip',
-                               destination_mac=dst_mac,
-                               source_mac=src_mac,
-                               )
+
         packet_ez.packet_judge()
+        print src + ' ====> ' + dst
+
+        if src_mac != 'a0:99:9b:0f:aa:45' and dst_mac != 'a0:99:9b:0f:aa:45':
+            print 'lp5!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        print '=============over over over====================='
+        # init the packet
 
     sniff(filter='ip', prn=prn)
 
-if __name__ == '__main__':
-    sniff_en()
 
-
-'''
 def child_process(name):
     print "i am a child process and pid is: " + str(os.getpid())
 
@@ -63,7 +63,6 @@ if __name__ == '__main__':
 
 '''
 
-'''
 from multiprocessing import Process
 import os
 
@@ -80,4 +79,4 @@ if __name__ == '__main__':
     p.start()
     p.join()
     print 'Process end.'
-'''
+
